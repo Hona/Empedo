@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
 
-COPY /src/Empedo/Emepdo.csproj .
+COPY /src/Empedo/Empedo.csproj .
 RUN dotnet restore Empedo.csproj
 
 COPY . .
