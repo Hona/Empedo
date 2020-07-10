@@ -1,20 +1,10 @@
-# DiscordBotTemplate
+# Empedo
 
-> Discord bot template code, using the Discord.NET library.
+> Discord bot integrating with the [TempusHub.xyz API](https://tempushub.xyz/swagger/index.html)
 
 Aimed to be quick to fork and add your commands with all the overhead done for you.
 
-## Features
-
-* Multiple environments for development and production
-* Thread safe logging
-* Clean startup with early quits ensuring correct setup
-* Automatic discovery of commands (thanks to Discord.NET)
-* DI setup with a few singletons for injecting into commands
-* Reflection-based `help` command, meaning you never have to change the command when you add new ones
-* Docker implementation, perfect for running in production.
-
-## Setup 
+## Setup
 
 Create environments folders called `Development` and `Production` - each one will be referred to as the env folder.
 Then, for each environment respectively, create the following:
