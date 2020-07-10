@@ -11,4 +11,4 @@ FROM mcr.microsoft.com/dotnet/core/runtime:3.1 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
 
-ENTRYPOINT ["dotnet", "Emepdo.dll"]
+ENTRYPOINT ["dotnet", "Empedo.dll"]
