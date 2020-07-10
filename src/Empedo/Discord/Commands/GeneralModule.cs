@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using DiscordBotTemplate.Models;
-using DiscordBotTemplate.Utilities;
+using Empedo.Models;
+using Empedo.Utilities;
 
-namespace DiscordBotTemplate.Discord.Commands
+namespace Empedo.Discord.Commands
 {
     public class GeneralModule : ModuleBase
     {

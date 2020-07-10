@@ -5,21 +5,20 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordBotTemplate.Constants;
-using DiscordBotTemplate.Logging;
-using DiscordBotTemplate.Models;
+using Empedo.Logging;
+using Empedo.Models;
 using Environment = System.Environment;
 
-namespace DiscordBotTemplate.Services
+namespace Empedo.Services
 {
-    public class TemplateCommandService
+    public class EmpedoCommandService
     {
         private readonly DiscordSocketClient _discordClient;
         private readonly CommandService _baseCommandService;
         private readonly IServiceProvider _serviceProvider;
         private readonly Config _config;
 
-        public TemplateCommandService(DiscordSocketClient discordClient, CommandService baseCommandService, IServiceProvider serviceProvider, Config config)
+        public EmpedoCommandService(DiscordSocketClient discordClient, CommandService baseCommandService, IServiceProvider serviceProvider, Config config)
         {
             _discordClient = discordClient;
             _baseCommandService = baseCommandService;

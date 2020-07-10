@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace DiscordBotTemplate.Utilities
+namespace Empedo.Utilities
 {
     public static class StringExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace DiscordBotTemplate.Constants
+namespace Empedo.Constants
 {
     public static class PathConstants
     {

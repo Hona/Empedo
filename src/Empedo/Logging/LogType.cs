@@ -1,4 +1,4 @@
-﻿namespace DiscordBotTemplate.Logging
+﻿namespace Empedo.Logging
 {
     public enum LogType
     {

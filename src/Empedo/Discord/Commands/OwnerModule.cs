@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace DiscordBotTemplate.Discord.Commands
+namespace Empedo.Discord.Commands
 {
     [RequireOwner]
     public class OwnerModule : ModuleBase

@@ -2,15 +2,15 @@
 using System.IO;
 using System.Linq;
 using Discord;
-using DiscordBotTemplate.Constants;
-using DiscordBotTemplate.Discord;
-using DiscordBotTemplate.Logging;
-using DiscordBotTemplate.Models;
-using DiscordBotTemplate.Utilities;
+using Empedo.Constants;
+using Empedo.Discord;
+using Empedo.Logging;
+using Empedo.Models;
+using Empedo.Utilities;
 using Newtonsoft.Json;
 using Environment = System.Environment;
 
-namespace DiscordBotTemplate
+namespace Empedo
 {
     public static class Program
     {
@@ -51,7 +51,7 @@ namespace DiscordBotTemplate
             var configString = File.ReadAllText(PathConstants.ConfigFile);
             var config = JsonConvert.DeserializeObject<Config>(configString);
 
-            var templateBot = new TemplateBot(discordBotToken, config);
+            var templateBot = new EmpedoBot(discordBotToken, config);
 
             // Start the bot in async context from a sync context
             var closingException = templateBot.RunAsync().GetAwaiter().GetResult();

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DiscordBotTemplate.Logging;
+using Empedo.Logging;
 
-namespace DiscordBotTemplate.Utilities
+namespace Empedo.Utilities
 {
     public static class ApplicationHelper
     {

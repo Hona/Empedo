@@ -2,19 +2,19 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using DiscordBotTemplate.Models;
-using DiscordBotTemplate.Services;
+using Empedo.Models;
+using Empedo.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DiscordBotTemplate.Discord
+namespace Empedo.Discord
 {
-    public class TemplateBot
+    public class EmpedoBot
     {
         private readonly DiscordSocketClient _discordClient;
         private readonly string _discordBotToken;
-        private readonly TemplateCommandService _templateCommandService;
+        private readonly EmpedoCommandService _empedoCommandService;
 
-        public TemplateBot(string discordBotToken, Config config)
+        public EmpedoBot(string discordBotToken, Config config)
         {
             _discordBotToken = discordBotToken;
 
@@ -29,7 +29,7 @@ namespace DiscordBotTemplate.Discord
             // Create a new discord bot client, with the config
             _discordClient = new DiscordSocketClient(discordClientConfig);
 
-            var baseCommandService = TemplateCommandService.BuildBaseCommandService();
+            var baseCommandService = EmpedoCommandService.BuildBaseCommandService();
 
             // Add services to dependency injection
             var serviceProvider = new ServiceCollection()
@@ -38,14 +38,14 @@ namespace DiscordBotTemplate.Discord
                 .AddSingleton(config)
                 .BuildServiceProvider();
 
-            _templateCommandService = new TemplateCommandService(_discordClient, baseCommandService, serviceProvider, config);
+            _empedoCommandService = new EmpedoCommandService(_discordClient, baseCommandService, serviceProvider, config);
         }
         internal async Task<Exception> RunAsync()
         {
             try
             {
                 // Register commands
-                await _templateCommandService.InitializeAsync();
+                await _empedoCommandService.InitializeAsync();
 
                 // Login and start bot
                 await _discordClient.LoginAsync(TokenType.Bot, _discordBotToken);

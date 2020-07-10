@@ -1,4 +1,4 @@
-﻿namespace DiscordBotTemplate.Models
+﻿namespace Empedo.Models
 {
     public enum Environment
     {

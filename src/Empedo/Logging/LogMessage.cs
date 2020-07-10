@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DiscordBotTemplate.Logging
+namespace Empedo.Logging
 {
     public class LogMessage
     {

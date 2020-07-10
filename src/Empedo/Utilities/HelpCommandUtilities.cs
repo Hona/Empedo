@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord;
 using Discord.Commands;
-using DiscordBotTemplate.Discord;
-using DiscordBotTemplate.Models;
-using DiscordBotTemplate.Discord.Commands;
+using Empedo.Discord;
+using Empedo.Models;
 
-namespace DiscordBotTemplate.Utilities
+namespace Empedo.Utilities
 {
     public static class HelpCommandUtilities
     {
