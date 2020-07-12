@@ -22,7 +22,8 @@ namespace Empedo.Discord.Commands
 
             var tempEmbed = new EmbedBuilder
             {
-                Description = "Building the help command... This message will be deleted when all help messages are sent",
+                Description =
+                    "Building the help command... This message will be deleted when all help messages are sent",
                 Color = Color.Blue
             };
             var tempMessage = await ReplyAsync(embed: tempEmbed.Build());
@@ -35,6 +36,7 @@ namespace Empedo.Discord.Commands
                     await ReplyAsync(embed: moduleHelpEmbed);
                 }
             }
+
             await tempMessage.DeleteAsync();
         }
     }

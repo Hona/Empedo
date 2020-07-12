@@ -18,11 +18,12 @@ namespace Empedo
         {
             // Get the current environment
             var environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
-            
+
             // Make sure environment is valid
             if (!Enum.TryParse(typeof(Models.Environment), environment, true, out _))
             {
-                Logger.LogError($"'{environment}' is not a valid environment, values are: '{string.Join("', '", ((Models.Environment[])Enum.GetValues(typeof(Models.Environment))).Select(x => x.ToString()))}'");
+                Logger.LogError(
+                    $"'{environment}' is not a valid environment, values are: '{string.Join("', '", ((Models.Environment[]) Enum.GetValues(typeof(Models.Environment))).Select(x => x.ToString()))}'");
                 ApplicationHelper.AnnounceAndExit();
             }
 
@@ -36,7 +37,8 @@ namespace Empedo
             }
             catch
             {
-                Logger.LogError("The discord bot token was invalid, please check the value in file: " + PathConstants.DiscordBotTokenFile);
+                Logger.LogError("The discord bot token was invalid, please check the value in file: " +
+                                PathConstants.DiscordBotTokenFile);
                 ApplicationHelper.AnnounceAndExit();
             }
 

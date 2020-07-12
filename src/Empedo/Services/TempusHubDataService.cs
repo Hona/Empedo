@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Empedo.Logging;
 using Empedo.Models.TempusHub;
@@ -30,14 +28,12 @@ namespace Empedo.Services
                     Logger.LogInfo("TempusHub: " + request);
                     // If T is a string, don't deserialise
                     return typeof(T) == typeof(string)
-                        ? (T)stringValue
-                        : JsonConvert.DeserializeObject<T>((string)stringValue);
+                        ? (T) stringValue
+                        : JsonConvert.DeserializeObject<T>((string) stringValue);
                 }
-                else
-                {
-                    Logger.LogError("Couldn't get Tempus API request: " + request);
-                    throw new Exception("Couldn't get Tempus API request: " + request);
-                }
+
+                Logger.LogError("Couldn't get Tempus API request: " + request);
+                throw new Exception("Couldn't get Tempus API request: " + request);
             }
             catch
             {

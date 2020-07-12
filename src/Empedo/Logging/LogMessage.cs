@@ -10,8 +10,9 @@ namespace Empedo.Logging
             Message = message;
             Exception = exception;
         }
+
         public LogType Severity { get; }
-        public string Message { get;}
+        public string Message { get; }
         public Exception Exception { get; }
         public bool HasException => Exception != null;
     }

@@ -10,6 +10,5 @@ namespace Empedo.Models
         [JsonProperty("soldier_emoji")] public string SoldierEmojiString { get; set; }
         [JsonIgnore] public Emoji DemomanEmoji => new Emoji(DemomanEmojiString);
         [JsonIgnore] public Emoji SoldierEmoji => new Emoji(SoldierEmojiString);
-
     }
 }

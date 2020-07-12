@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Empedo.Utilities
+﻿namespace Empedo.Utilities
 {
     public static class TempusHubHelper
     {
-        private static string _tempusHubBase = "https://tempushub.xyz";
+        private static readonly string _tempusHubBase = "https://tempushub.xyz";
 
         public static string PlayerUrl(int id)
             => _tempusHubBase + "/player/" + id;

@@ -10,8 +10,8 @@ namespace Empedo.Discord
 {
     public class EmpedoBot
     {
-        private readonly DiscordSocketClient _discordClient;
         private readonly string _discordBotToken;
+        private readonly DiscordSocketClient _discordClient;
         private readonly EmpedoCommandService _empedoCommandService;
 
         public EmpedoBot(string discordBotToken, Config config)
@@ -38,8 +38,10 @@ namespace Empedo.Discord
                 .AddSingleton(config)
                 .BuildServiceProvider();
 
-            _empedoCommandService = new EmpedoCommandService(_discordClient, baseCommandService, serviceProvider, config);
+            _empedoCommandService =
+                new EmpedoCommandService(_discordClient, baseCommandService, serviceProvider, config);
         }
+
         internal async Task<Exception> RunAsync()
         {
             try
