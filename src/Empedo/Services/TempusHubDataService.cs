@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Empedo.Logging;
 using Empedo.Models.TempusHub;
+using Empedo.Models.TempusHub.Activity;
 using Newtonsoft.Json;
 
 namespace Empedo.Services
@@ -35,13 +36,25 @@ namespace Empedo.Services
                 Logger.LogError("Couldn't get Tempus API request: " + request);
                 throw new Exception("Couldn't get Tempus API request: " + request);
             }
-            catch
+            catch (Exception e)
             {
-                throw new Exception("Failed on: " + request);
+                throw new Exception("Failed on: " + request, e);
             }
         }
 
         public static async Task<List<TopPlayerOnline>> GetTopPlayersOnlineAsync()
             => await GetResponseAsync<List<TopPlayerOnline>>("/topplayersonline");
+
+        public static async Task<List<RecentRecord>> GetRecentMapWRsAsync()
+            => await GetResponseAsync<List<RecentRecord>>("/activity/MapWR");
+
+        public static async Task<List<RecentRecord>> GetRecentCourseWRsAsync()
+            => await GetResponseAsync<List<RecentRecord>>("/activity/CourseWR");
+
+        public static async Task<List<RecentRecord>> GetRecentBonusWRsAsync()
+            => await GetResponseAsync<List<RecentRecord>>("/activity/BonusWR");
+
+        public static async Task<List<RecentRecord>> GetRecentMapTTsAsync()
+            => await GetResponseAsync<List<RecentRecord>>("/activity/MapTT");
     }
 }
