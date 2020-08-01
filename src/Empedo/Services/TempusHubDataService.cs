@@ -13,7 +13,7 @@ namespace Empedo.Services
     {
         private static readonly HttpClient _httpClient = new HttpClient
         {
-            BaseAddress = new Uri("https://tempushub.xyz")
+            BaseAddress = new Uri("http://tempushub.xyz")
         };
 
         private static async Task<T> GetResponseAsync<T>(string request)
