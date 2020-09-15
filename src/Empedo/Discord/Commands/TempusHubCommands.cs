@@ -67,7 +67,7 @@ namespace Empedo.Discord.Commands
                 {
                     Title = "Recent Map WRs",
                     Description = string.Join(Environment.NewLine, desiredWRs.Select(x =>
-                        $"{(x.RecordInfo.Class == 4 ? Config.DemomanEmoji : Config.SoldierEmoji)} WR • {Format.Url(Format.Bold(Format.Sanitize(x.PlayerInfo.RealName ?? x.PlayerInfo.Name)), TempusHubHelper.PlayerUrl(x.PlayerInfo.Id))} on {Format.Url(Format.Bold(Format.Sanitize(x.MapInfo.Name)), TempusHubHelper.MapUrl(x.MapInfo.Name))} • {Format.Bold(RecordUtilities.FormattedDuration(x.RecordInfo.Duration))} (WR -{RecordUtilities.FormattedDuration(x.CachedTime.OldWRDuration.Value - x.CachedTime.CurrentWRDuration.Value)}) • {x.RecordInfo.Date.GetPrettyTimeSince()}"))
+                        $"{(x.RecordInfo.Class == 4 ? Config.DemomanEmoji : Config.SoldierEmoji)} WR • {Format.Url(Format.Bold(Format.Sanitize(x.PlayerInfo.RealName ?? x.PlayerInfo.Name)), TempusHubHelper.PlayerUrl(x.PlayerInfo.Id))} on {Format.Url(Format.Bold(Format.Sanitize(x.MapInfo.Name)), TempusHubHelper.MapUrl(x.MapInfo.Name))} • {Format.Bold(RecordUtilities.FormattedDuration(x.RecordInfo.Duration))} (WR -{RecordUtilities.FormattedDuration(x.CachedTime.OldWRDuration - x.CachedTime.CurrentWRDuration) ?? "N/A"}) • {x.RecordInfo.Date.GetPrettyTimeSince()}"))
                 }.WithFooter($"Page {page} of {pageCount}").WithCurrentTimestamp();
 
                 await ReplyAsync(embed: embedBuilder.Build());
