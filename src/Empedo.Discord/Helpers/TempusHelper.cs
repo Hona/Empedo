@@ -1,4 +1,5 @@
 ﻿using System;
+using Empedo.Discord.Models;
 
 namespace Empedo.Discord.Helpers
 {
@@ -23,6 +24,8 @@ namespace Empedo.Discord.Helpers
 
             return classString == "S" ? "<:soldier:702841577806233702>" : " <:demoman:702841578259087380>";
         }
+
+        public static string GetEmote(this TempusClass tempusClass) => GetClassEmote((int) tempusClass);
 
         public static string TicksToFormattedTime(long ticks)
         {

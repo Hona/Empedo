@@ -41,13 +41,17 @@ namespace Empedo.Discord.Services
                 
                 var embedBuilder = new DiscordEmbedBuilder
                 {
-                    Timestamp = DateTimeOffset.Now,
                     Description = string.Join(Environment.NewLine, embedGroup)
                 };
 
                 if (i == 0)
                 {
                     embedBuilder.Title = "Server Overview";
+                }
+
+                if (i == embedGroups.Count - 1)
+                {
+                    embedBuilder.Timestamp = DateTimeOffset.Now;
                 }
                 
                 output.Add(embedBuilder);
@@ -68,18 +72,29 @@ namespace Empedo.Discord.Services
                 .SelectMany(x => x.GameInfo.Users)
                 .Where(x => x?.Id != null).ToList();
 
-            var userIdStrings = (users.Where(user => user?.Id != null).Select(user => user.Id.ToString())).ToList();
+            var userIdStrings = users.Where(user => user?.Id != null).Select(user => user.Id.ToString()).ToList();
 
             var rankTasks = new List<Task<Rank>>();
             rankTasks.AddRange(userIdStrings.Select(_tempus.GetUserRankAsync));
 
             var ranks = await Task.WhenAll(rankTasks);
-            var rankedUsers = ranks.ToDictionary(rank => users.First(x => x.Id == rank.PlayerInfo.Id), rank =>
-                rank.ClassRankInfo.DemoRank.Rank <= rank.ClassRankInfo.SoldierRank.Rank
-                    ? rank.ClassRankInfo.DemoRank.Rank
-                    : rank.ClassRankInfo.SoldierRank.Rank);
+            
+            var rankedUsers = ranks.ToDictionary(rank => users.First(x => x.Id == rank.PlayerInfo.Id),
+                rank =>
+                    rank.ClassRankInfo.DemoRank.Rank <= rank.ClassRankInfo.SoldierRank.Rank
+                        ? new ClassRankViewModel
+                        {
+                            Class = TempusClass.Demoman,
+                            Rank = rank.ClassRankInfo.DemoRank.Rank
+                        }
+                        : new ClassRankViewModel
+                        {
+                            Class = TempusClass.Soldier,
+                            Rank = rank.ClassRankInfo.SoldierRank.Rank
+                        });
 
-            rankedUsers = rankedUsers.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+            rankedUsers = rankedUsers.OrderBy(x => x.Value)
+                .ToDictionary(x => x.Key, x => x.Value);
             
             var rankedLines = new List<string>();
             foreach (var (key, value) in rankedUsers)
@@ -94,7 +109,7 @@ namespace Empedo.Discord.Services
                 if (server == null || key.Id == null) continue;
                 
                 rankedLines.Add(
-                    $"Rank {value} - {Formatter.MaskedUrl(Formatter.Sanitize(key.Name), TempusHelper.GetPlayerUrl(key.Id.Value))} on {Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.CurrentMap), TempusHelper.GetMapUrl(server.GameInfo.CurrentMap))} {Formatter.MaskedUrl(server.ServerInfo.Shortname, TempusHelper.GetServerUrl(server.ServerInfo.Id))}");
+                    $"{value.Class.GetEmote()} {value.Rank} • {Formatter.MaskedUrl(Formatter.Sanitize(key.Name), TempusHelper.GetPlayerUrl(key.Id.Value))} on {Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.CurrentMap), TempusHelper.GetMapUrl(server.GameInfo.CurrentMap))} • {Formatter.MaskedUrl(server.ServerInfo.Shortname, TempusHelper.GetServerUrl(server.ServerInfo.Id))}");
             }
 
             var rankedLineGroups = rankedLines.SplitEmbedDescription();
@@ -107,12 +122,16 @@ namespace Empedo.Discord.Services
                 var builder = new DiscordEmbedBuilder
                 {
                     Description = string.Join(Environment.NewLine, lineGroup),
-                    Timestamp = DateTimeOffset.Now
                 };
 
                 if (i == 0)
                 {
                     builder.Title = "**Highest Ranked Players Online**";
+                }
+
+                if (i == rankedLineGroups.Count - 1)
+                {
+                    builder.Timestamp = DateTimeOffset.Now;
                 }
 
                 output.Add(builder);
