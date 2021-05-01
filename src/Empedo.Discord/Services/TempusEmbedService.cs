@@ -30,7 +30,7 @@ namespace Empedo.Discord.Services
                 .OrderByDescending(x => x.GameInfo.PlayerCount).ToList();
 
             var lines = servers.Select(x =>
-                $"{x.GameInfo.PlayerCount}/{x.GameInfo.MaxPlayers} • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id})").ToList();
+                $"`{x.GameInfo.PlayerCount.ToString().PadLeft(2)}/{x.GameInfo.MaxPlayers.ToString().PadLeft(2)}` • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id}) • {Formatter.MaskedUrl(Formatter.Sanitize(x.GameInfo.CurrentMap), TempusHelper.GetMapUrl(x.GameInfo.CurrentMap))}").ToList();
 
             var embedGroups = lines.SplitEmbedDescription();
             var output = new List<DiscordEmbedBuilder>();
@@ -93,7 +93,7 @@ namespace Empedo.Discord.Services
                             Rank = rank.ClassRankInfo.SoldierRank.Rank
                         });
 
-            rankedUsers = rankedUsers.OrderBy(x => x.Value)
+            rankedUsers = rankedUsers.OrderBy(x => x.Value.Rank)
                 .ToDictionary(x => x.Key, x => x.Value);
             
             var rankedLines = new List<string>();
