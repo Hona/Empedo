@@ -25,6 +25,7 @@ namespace Empedo.Discord.Helpers
                     // Make a copy
                     output.Add(currentEmbed.ToList());
                     currentEmbed = new List<string>();
+                    totalCount = 0;
                 }
                 
                 currentEmbed.Add(line);
