@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DBB8FB74-02AB-4A70-84B5-D42A65479E10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empedo.Discord", "src\Empedo.Discord\Empedo.Discord.csproj", "{CB9FB57D-A772-4190-88C5-1AAA4A4CD172}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FBF1A53-D9E8-49ED-BA3A-5C6DD36CD69C}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose.yml = docker-compose.yml
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB9FB57D-A772-4190-88C5-1AAA4A4CD172} = {DBB8FB74-02AB-4A70-84B5-D42A65479E10}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CB9FB57D-A772-4190-88C5-1AAA4A4CD172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB9FB57D-A772-4190-88C5-1AAA4A4CD172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB9FB57D-A772-4190-88C5-1AAA4A4CD172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB9FB57D-A772-4190-88C5-1AAA4A4CD172}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

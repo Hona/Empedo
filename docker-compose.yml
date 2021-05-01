@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  discord-bot:
+    build:
+      dockerfile: src/Empedo.Discord/Dockerfile
+      context: .
+    image: empedo-discord-bot
+    container_name: EmpedoDiscordBot
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./config/appsettings.json:/app/appsettings.json
