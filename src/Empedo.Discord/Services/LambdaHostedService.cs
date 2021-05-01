@@ -93,7 +93,7 @@ namespace Empedo.Discord.Services
             var servers = await _tempus.GetServerStatusAsync();
             
             var serverOverviewEmbeds = await _tempusEmbedService.GetServerOverviewAsync(servers);
-            var topPlayerOnlineEmbeds = await _tempusEmbedService.GetTopPlayersOnlineAsync(servers)
+            var topPlayerOnlineEmbeds = await _tempusEmbedService.GetTopPlayersOnlineAsync(servers);
             
             await WipeChannelAsync(channel);
             
