@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Empedo.Discord.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -30,9 +31,16 @@ namespace Empedo.Discord.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _discordClient.GuildDownloadCompleted += InitializeTimer;
+
+            return Task.CompletedTask;
+        }
+
+        private Task InitializeTimer(DiscordClient discordClient, GuildDownloadCompletedEventArgs e)
+        {
             _timer = new Timer(TickAsync, null, TimeSpan.Zero, 
                 TimeSpan.FromMinutes(5));
-
+            
             return Task.CompletedTask;
         }
 
@@ -57,7 +65,7 @@ namespace Empedo.Discord.Services
         {
             var messages = await discordChannel.GetMessagesAsync();
 
-            if (messages == null || !messages.Any())
+            if (!messages.Any())
             {
                 return;
             }
