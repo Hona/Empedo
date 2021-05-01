@@ -57,7 +57,7 @@ namespace Empedo.Discord.Services
         {
             var messages = await discordChannel.GetMessagesAsync();
 
-            if (!messages.Any())
+            if (messages == null || !messages.Any())
             {
                 return;
             }
