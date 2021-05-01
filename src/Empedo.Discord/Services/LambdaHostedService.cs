@@ -30,7 +30,7 @@ namespace Empedo.Discord.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(TickAsync, null, TimeSpan.Zero, 
-                TimeSpan.FromSeconds(5));
+                TimeSpan.FromMinutes(5));
 
             return Task.CompletedTask;
         }
