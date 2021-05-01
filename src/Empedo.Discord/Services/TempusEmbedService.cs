@@ -24,10 +24,7 @@ namespace Empedo.Discord.Services
 
         public async Task<List<DiscordEmbedBuilder>> GetServerOverviewAsync(List<ServerStatusModel> servers = null)
         {
-            if (servers == null)
-            {
-                servers = await _tempus.GetServerStatusAsync();
-            }
+            servers ??= await _tempus.GetServerStatusAsync();
 
             servers = servers.Where(x => x.GameInfo != null && x.GameInfo.PlayerCount > 0)
                 .OrderByDescending(x => x.GameInfo.PlayerCount).ToList();
@@ -61,10 +58,7 @@ namespace Empedo.Discord.Services
 
         public async Task<List<DiscordEmbedBuilder>> GetTopPlayersOnlineAsync(List<ServerStatusModel> servers = null)
         {
-            if (servers == null)
-            {
-                servers = await _tempus.GetServerStatusAsync();
-            }
+            servers ??= await _tempus.GetServerStatusAsync();
 
             var users = servers
                 .Where(x => x.GameInfo != null &&
