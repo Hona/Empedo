@@ -18,7 +18,7 @@ namespace Empedo.Discord.Helpers
             foreach (var line in lines)
             {
                 // Include the newline in the count
-                totalCount += line.Length + 2;
+                totalCount += line.Length + 10;
 
                 if (totalCount > lengthAllowed)
                 {

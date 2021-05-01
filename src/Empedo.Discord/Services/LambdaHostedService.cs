@@ -56,6 +56,7 @@ namespace Empedo.Discord.Services
         
         private async void TickAsync(object state)
         {
+            _logger.LogInformation("Updating...");
             var tasks = new List<Task>
             {
                 UpdateOverviewsAsync()
