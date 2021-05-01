@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -55,6 +56,12 @@ namespace Empedo.Discord.Services
         private async Task WipeChannelAsync(DiscordChannel discordChannel)
         {
             var messages = await discordChannel.GetMessagesAsync();
+
+            if (!messages.Any())
+            {
+                return;
+            }
+            
             await discordChannel.DeleteMessagesAsync(messages);
         }
 
