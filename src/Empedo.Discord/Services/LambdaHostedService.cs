@@ -10,6 +10,7 @@ using Empedo.Discord.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TempusApi;
 
 namespace Empedo.Discord.Services
 {
@@ -19,14 +20,16 @@ namespace Empedo.Discord.Services
         private readonly TempusEmbedService _tempusEmbedService;
         private readonly IConfiguration _configuration;
         private readonly DiscordClient _discordClient;
+        private readonly Tempus _tempus;
         private Timer _timer;
 
-        public LambdaHostedService(ILogger<LambdaHostedService> logger, TempusEmbedService tempusEmbedService, IConfiguration configuration, DiscordClient discordClient)
+        public LambdaHostedService(ILogger<LambdaHostedService> logger, TempusEmbedService tempusEmbedService, IConfiguration configuration, DiscordClient discordClient, Tempus tempus)
         {
             _logger = logger;
             _tempusEmbedService = tempusEmbedService;
             _configuration = configuration;
             _discordClient = discordClient;
+            _tempus = tempus;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -85,11 +88,13 @@ namespace Empedo.Discord.Services
         private async Task UpdateOverviewsAsync()
         {
             var channel = await GetAndWipeChannelAsync("Lambda:OverviewsChannelId");
+
+            var servers = await _tempus.GetServerStatusAsync();
             
-            var serverOverviewEmbeds = await _tempusEmbedService.GetServerOverviewAsync();
+            var serverOverviewEmbeds = await _tempusEmbedService.GetServerOverviewAsync(servers);
             await serverOverviewEmbeds.SendAll(channel);
 
-            var topPlayerOnlineEmbeds = await _tempusEmbedService.GetTopPlayersOnlineAsync();
+            var topPlayerOnlineEmbeds = await _tempusEmbedService.GetTopPlayersOnlineAsync(servers);
             await topPlayerOnlineEmbeds.SendAll(channel);
         }
 

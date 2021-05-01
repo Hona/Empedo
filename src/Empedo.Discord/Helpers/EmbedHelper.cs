@@ -7,7 +7,7 @@ namespace Empedo.Discord.Helpers
 {
     public static class EmbedHelper
     {
-        public static List<List<string>> SplitEmbedDescription(this List<string> lines, int lengthAllowed = 2048)
+        public static List<List<string>> SplitEmbedDescription(this List<string> lines, int lengthAllowed = 2000)
         {
             var totalCount = 0;
 
@@ -18,7 +18,7 @@ namespace Empedo.Discord.Helpers
             foreach (var line in lines)
             {
                 // Include the newline in the count
-                totalCount += line.Length + 1;
+                totalCount += line.Length + 2;
 
                 if (totalCount > lengthAllowed)
                 {
@@ -29,6 +29,11 @@ namespace Empedo.Discord.Helpers
                 }
                 
                 currentEmbed.Add(line);
+            }
+
+            if (!output.Any())
+            {
+                output.Add(currentEmbed);
             }
 
             return output;
