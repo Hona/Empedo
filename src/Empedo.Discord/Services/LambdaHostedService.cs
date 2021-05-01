@@ -88,14 +88,16 @@ namespace Empedo.Discord.Services
 
         private async Task UpdateOverviewsAsync()
         {
-            var channel = await GetAndWipeChannelAsync("Lambda:OverviewsChannelId");
+            var channel = await _discordClient.GetChannelAsync(ulong.Parse(_configuration["Lambda:OverviewsChannelId"]));
 
             var servers = await _tempus.GetServerStatusAsync();
             
             var serverOverviewEmbeds = await _tempusEmbedService.GetServerOverviewAsync(servers);
+            var topPlayerOnlineEmbeds = await _tempusEmbedService.GetTopPlayersOnlineAsync(servers)
+            
+            await WipeChannelAsync(channel);
+            
             await serverOverviewEmbeds.SendAll(channel);
-
-            var topPlayerOnlineEmbeds = await _tempusEmbedService.GetTopPlayersOnlineAsync(servers);
             await topPlayerOnlineEmbeds.SendAll(channel);
         }
 
