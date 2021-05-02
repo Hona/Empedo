@@ -7,8 +7,10 @@ using DSharpPlus.Entities;
 using Empedo.Discord.Helpers;
 using Empedo.Discord.Models;
 using TempusApi;
+using TempusApi.Models.Activity;
 using TempusApi.Models.Rank;
 using TempusApi.Models.Responses;
+using PlayerInfo = TempusApi.Models.Rank.PlayerInfo;
 
 namespace Empedo.Discord.Services
 {
@@ -22,45 +24,20 @@ namespace Empedo.Discord.Services
             _tempus = tempus;
         }
 
-        public async Task<List<DiscordEmbedBuilder>> GetServerOverviewAsync(List<ServerStatusModel> servers = null)
+        public async Task<List<DiscordEmbedBuilder>> GetServerOverviewAsync(List<ServerStatusModel> servers = null, bool decorateAllEmbeds = false)
         {
             servers ??= await _tempus.GetServerStatusAsync();
 
             servers = servers.Where(x => x.GameInfo != null && x.GameInfo.PlayerCount > 0)
                 .OrderByDescending(x => x.GameInfo.PlayerCount).ToList();
-
-            var lines = servers.Select(x =>
-                $"`{x.GameInfo.PlayerCount.ToString().PadLeft(2)}/{x.GameInfo.MaxPlayers.ToString().PadLeft(2)}` • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id}) • {Formatter.MaskedUrl(Formatter.Sanitize(x.GameInfo.CurrentMap), TempusHelper.GetMapUrl(x.GameInfo.CurrentMap))}").ToList();
-
-            var embedGroups = lines.SplitEmbedDescription();
-            var output = new List<DiscordEmbedBuilder>();
             
-            for (var i = 0; i < embedGroups.Count; i++)
-            {
-                var embedGroup = embedGroups[i];
-                
-                var embedBuilder = new DiscordEmbedBuilder
-                {
-                    Description = string.Join(Environment.NewLine, embedGroup)
-                };
 
-                if (i == 0)
-                {
-                    embedBuilder.Title = "Server Overview";
-                }
-
-                if (i == embedGroups.Count - 1)
-                {
-                    embedBuilder.Timestamp = DateTimeOffset.Now;
-                }
-                
-                output.Add(embedBuilder);
-            }
-
-            return output;
+            return servers.BuildEmbeds(x =>
+                    $"`{x.GameInfo.PlayerCount.ToString().PadLeft(2)}/{x.GameInfo.MaxPlayers.ToString().PadLeft(2)}` • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id}) • {Formatter.MaskedUrl(Formatter.Sanitize(x.GameInfo.CurrentMap), TempusHelper.GetMapUrl(x.GameInfo.CurrentMap))}",x => x.Title = "Server Overview",
+                x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
         }
 
-        public async Task<List<DiscordEmbedBuilder>> GetTopPlayersOnlineAsync(List<ServerStatusModel> servers = null)
+        public async Task<List<DiscordEmbedBuilder>> GetTopPlayersOnlineAsync(List<ServerStatusModel> servers = null, bool decorateAllEmbeds = false)
         {
             servers ??= await _tempus.GetServerStatusAsync();
 
@@ -113,28 +90,97 @@ namespace Empedo.Discord.Services
             }
 
             var rankedLineGroups = rankedLines.SplitEmbedDescription();
+
+            return rankedLineGroups.BuildEmbeds(x => x.Title = "**Top Players Online**",
+                x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
+        }
+
+        private static string FormatRecord(MapInfo mapInfo, RecordInfoShort recordInfo, TempusApi.Models.Activity.PlayerInfo playerInfo) =>
+            $" • {Formatter.MaskedUrl(Formatter.Sanitize(playerInfo.Name), TempusHelper.GetPlayerUrl(playerInfo.Id))} on {Formatter.MaskedUrl(Formatter.Sanitize(mapInfo.Name), TempusHelper.GetMapUrl(mapInfo.Name))} • {Formatter.MaskedUrl($"**{Formatter.Sanitize(FormatDuration(recordInfo.Duration))}**", TempusHelper.GetRecordUrl(recordInfo.Id))}";
+        
+        private static string FormatDuration(double duration)
+        {
+            var seconds = (int)Math.Truncate(duration);
+            var milliseconds = (duration - (int)Math.Truncate(duration)) * 1000;
+            var timespan = new TimeSpan(0, 0, 0, seconds, (int)Math.Truncate(milliseconds));
+            return timespan.Days > 0 ? timespan.ToString(@"dd\:hh\:mm\:ss\.ff") : timespan.ToString(timespan.Hours > 0 ? @"hh\:mm\:ss\.ff" : @"mm\:ss\.ff");
+        }
+        
+        public async Task<List<DiscordEmbedBuilder>> GetRecentMapRecordsAsync(RecentActivityModel activity = null, bool decorateAllEmbeds = false)
+        {
+            activity ??= await _tempus.GetRecentActivityAsync();
+
+            return activity.MapRecords.BuildEmbeds(x => $"{TempusHelper.GetClassEmote(x.RecordInfo.Class)}"
+                                                        + FormatRecord(x.MapInfo, x.RecordInfo, x.PlayerInfo),
+                x => x.Title = "Recent Map Records",
+                x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
+        }
+        
+        public async Task<List<DiscordEmbedBuilder>> GetRecentCourseRecordsAsync(RecentActivityModel activity = null, bool decorateAllEmbeds = false)
+        {
+            activity ??= await _tempus.GetRecentActivityAsync();
+
+            return activity.CourseRecords.BuildEmbeds(x => $"{TempusHelper.GetClassEmote(x.RecordInfo.Class)} C{x.ZoneInfo.Zoneindex}"
+                                                        + FormatRecord(x.MapInfo, x.RecordInfo, x.PlayerInfo),
+                x => x.Title = "Recent Course Records",
+                x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
+        }
+        
+        public async Task<List<DiscordEmbedBuilder>> GetRecentBonusRecordsAsync(RecentActivityModel activity = null, bool decorateAllEmbeds = false)
+        {
+            activity ??= await _tempus.GetRecentActivityAsync();
+
+            return activity.BonusRecords.BuildEmbeds(x => $"{TempusHelper.GetClassEmote(x.RecordInfo.Class)} B{x.ZoneInfo.Zoneindex}"
+                                                           + FormatRecord(x.MapInfo, x.RecordInfo, x.PlayerInfo),
+                x => x.Title = "Recent Bonus Records",
+                x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
+        }
+        
+        public async Task<List<DiscordEmbedBuilder>> GetRecentMapTopTimesAsync(RecentActivityModel activity = null, bool decorateAllEmbeds = false)
+        {
+            activity ??= await _tempus.GetRecentActivityAsync();
+
+            return activity.MapTopTimes.BuildEmbeds(x => $"{TempusHelper.GetClassEmote(x.RecordInfo.Class)} #{x.Rank}"
+                                                           + FormatRecord(x.MapInfo, x.RecordInfo, x.PlayerInfo),
+                x => x.Title = "Recent Map Top Times",
+                x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
+        }
+
+        public async Task<List<DiscordEmbedBuilder>> GetServerListAsync(List<ServerStatusModel> servers = null)
+        {
+            servers ??= await _tempus.GetServerStatusAsync();
+
             var output = new List<DiscordEmbedBuilder>();
 
-            for (var i = 0; i < rankedLineGroups.Count; i++)
+            foreach (var server in servers.OrderByDescending(x => x.GameInfo != null)
+                .ThenByDescending(x => x.GameInfo?.PlayerCount ?? -1))
             {
-                var lineGroup = rankedLineGroups[i];
-                
-                var builder = new DiscordEmbedBuilder
+                if (server?.ServerInfo == null || server.GameInfo == null || server.ServerInfo.Hidden ||
+                    server.GameInfo.PlayerCount == 0)
+                    continue;
+
+                var embed = new DiscordEmbedBuilder
                 {
-                    Description = string.Join(Environment.NewLine, lineGroup),
+                    Title = $"**{server.ServerInfo.Name}**"
                 };
+                
+                embed.AddField("Map", Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.CurrentMap), TempusHelper.GetMapUrl(server.GameInfo.CurrentMap)));
+                
+                if (server.GameInfo.NextMap != null)
+                    embed.AddField("Next Map", Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.NextMap.ToString()), TempusHelper.GetMapUrl(server.GameInfo.NextMap.ToString())));
 
-                if (i == 0)
-                {
-                    builder.Title = "**Highest Ranked Players Online**";
-                }
+                embed.AddField("Connect",
+                    Formatter.Sanitize(server.ServerInfo.Addr));
 
-                if (i == rankedLineGroups.Count - 1)
-                {
-                    builder.Timestamp = DateTimeOffset.Now;
-                }
-
-                output.Add(builder);
+                embed.AddField("Players Online", server.GameInfo.PlayerCount + "/" + server.GameInfo.MaxPlayers);
+                
+                if (server.GameInfo.Users.Any())
+                    embed.AddField("Players",
+                        server.GameInfo.Users.OrderBy(x => x.Name).Aggregate("",
+                                (currentString, nextPlayer) => currentString + (nextPlayer.Id.HasValue ? Formatter.MaskedUrl(nextPlayer.Name, TempusHelper.GetPlayerUrl(nextPlayer.Id.Value)) : nextPlayer.Name)  + ", ")
+                            .TrimEnd(',', ' '));
+                
+                output.Add(embed);
             }
 
             return output;

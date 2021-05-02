@@ -59,7 +59,9 @@ namespace Empedo.Discord.Services
             _logger.LogInformation("Updating...");
             var tasks = new List<Task>
             {
-                UpdateOverviewsAsync()
+                UpdateOverviewsAsync(),
+                UpdateRecentActivityAsync(),
+                UpdateServerListAsync()
             };
 
             await Task.WhenAll(tasks);
@@ -99,6 +101,36 @@ namespace Empedo.Discord.Services
             
             await serverOverviewEmbeds.SendAll(channel);
             await topPlayerOnlineEmbeds.SendAll(channel);
+        }
+
+        private async Task UpdateRecentActivityAsync()
+        {
+            var channel = await _discordClient.GetChannelAsync(ulong.Parse(_configuration["Lambda:ActivityChannelId"]));
+
+            var activity = await _tempus.GetRecentActivityAsync();
+
+            var recentMapRecordEmbeds = await _tempusEmbedService.GetRecentMapRecordsAsync(activity);
+            var recentCourseRecordEmbeds = await _tempusEmbedService.GetRecentCourseRecordsAsync(activity);
+            var recentBonusRecordEmbeds = await _tempusEmbedService.GetRecentBonusRecordsAsync(activity);
+            var recentMapTopTimeEmbeds = await _tempusEmbedService.GetRecentMapTopTimesAsync(activity);
+
+            await WipeChannelAsync(channel);
+
+            await recentMapRecordEmbeds.SendAll(channel);
+            await recentCourseRecordEmbeds.SendAll(channel);
+            await recentBonusRecordEmbeds.SendAll(channel);
+            await recentMapTopTimeEmbeds.SendAll(channel);
+        }
+
+        private async Task UpdateServerListAsync()
+        {
+            var channel = await _discordClient.GetChannelAsync(ulong.Parse(_configuration["Lambda:ServersChannelId"]));
+
+            var serverEmbeds = await _tempusEmbedService.GetServerListAsync();
+
+            await WipeChannelAsync(channel);
+
+            await serverEmbeds.SendAll(channel);
         }
 
         public void Dispose()
