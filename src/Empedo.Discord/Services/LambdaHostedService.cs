@@ -17,13 +17,13 @@ namespace Empedo.Discord.Services
     public class LambdaHostedService : IHostedService, IDisposable
     {
         private readonly ILogger<LambdaHostedService> _logger;
-        private readonly TempusEmbedService _tempusEmbedService;
+        private readonly ITempusEmbedService _tempusEmbedService;
         private readonly IConfiguration _configuration;
         private readonly DiscordClient _discordClient;
         private readonly Tempus _tempus;
         private Timer _timer;
 
-        public LambdaHostedService(ILogger<LambdaHostedService> logger, TempusEmbedService tempusEmbedService, IConfiguration configuration, DiscordClient discordClient, Tempus tempus)
+        public LambdaHostedService(ILogger<LambdaHostedService> logger, ITempusEmbedService tempusEmbedService, IConfiguration configuration, DiscordClient discordClient, Tempus tempus)
         {
             _logger = logger;
             _tempusEmbedService = tempusEmbedService;

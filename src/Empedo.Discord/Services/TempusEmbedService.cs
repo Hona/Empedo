@@ -10,15 +10,14 @@ using TempusApi;
 using TempusApi.Models.Activity;
 using TempusApi.Models.Rank;
 using TempusApi.Models.Responses;
-using PlayerInfo = TempusApi.Models.Rank.PlayerInfo;
 
 namespace Empedo.Discord.Services
 {
     [BotService(BotServiceType.Inject)]
-    public class TempusEmbedService
+    public class TempusEmbedService : ITempusEmbedService
     {
         private readonly Tempus _tempus;
-
+        
         public TempusEmbedService(Tempus tempus)
         {
             _tempus = tempus;
@@ -31,7 +30,6 @@ namespace Empedo.Discord.Services
             servers = servers.Where(x => x.GameInfo != null && x.GameInfo.PlayerCount > 0)
                 .OrderByDescending(x => x.GameInfo.PlayerCount).ToList();
             
-
             return servers.BuildEmbeds(x =>
                     $"`{x.GameInfo.PlayerCount.ToString().PadLeft(2)}/{x.GameInfo.MaxPlayers.ToString().PadLeft(2)}` • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id}) • {Formatter.MaskedUrl(Formatter.Sanitize(x.GameInfo.CurrentMap), TempusHelper.GetMapUrl(x.GameInfo.CurrentMap))}",x => x.Title = "Server Overview",
                 x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
@@ -182,6 +180,31 @@ namespace Empedo.Discord.Services
                 
                 output.Add(embed);
             }
+
+            return output;
+        }
+
+        public async Task<List<DiscordEmbedBuilder>> GetMapOverviewAsync(string mapName)
+        {
+            var map = await _tempus.GetFullMapOverViewAsync(mapName);
+            var firstAuthorSteamId = TempusHelper.GetSteamId64(map.Authors.First().SteamId);
+            var authorAvatar = await _tempus.GetSteamAvatarsAsync(firstAuthorSteamId);
+            
+            var output = new List<DiscordEmbedBuilder>();
+            
+            output.Add(new DiscordEmbedBuilder
+            {
+                Title = map.MapInfo.Name,
+                Author = new DiscordEmbedBuilder.EmbedAuthor
+                {
+                    IconUrl = authorAvatar.FirstOrDefault().Value?.Avatars?.MediumUrl,
+                    Name = map.Authors.First().Name + (map.Authors.Count == 1 ? string.Empty : $" + {map.Authors.Count - 1} others"),
+                    Url = TempusHelper.GetPlayerUrl(map.Authors.First().UserId).ToString()
+                },
+                Timestamp = DateTimeOffset.FromUnixTimeSeconds((long)map.MapInfo.DateAdded),
+                Description = $"{TempusHelper.GetClassEmote(3)} T{map.TierInfo.Soldier} {Formatter.MaskedUrl("Showcase", TempusHelper.GetYoutubeUrl(map.Videos.Soldier))} • {TempusHelper.GetClassEmote(4)} T{map.TierInfo.Demoman} {Formatter.MaskedUrl("Showcase", TempusHelper.GetYoutubeUrl(map.Videos.Demoman))}",
+                ImageUrl = TempusHelper.GetMapImageUrl(map.MapInfo.Name)
+            });
 
             return output;
         }

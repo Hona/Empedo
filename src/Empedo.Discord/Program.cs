@@ -35,6 +35,8 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
 
         services.AddSingleton<Tempus>();
 
+        services.AddSingleton<ITempusEmbedService, CachedTempusEmbedService>();
+
         services.AddHostedService<LambdaHostedService>();
         services.AddHostedService<Bot>();
     });

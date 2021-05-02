@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
+using Empedo.Discord.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Empedo.Discord.Commands
@@ -10,5 +9,6 @@ namespace Empedo.Discord.Commands
     public class EmpedoModuleBase : BaseCommandModule
     {
         public ILogger Logger { get; set; }
+        public ITempusEmbedService TempusEmbedService { get; set; }
     }
 }

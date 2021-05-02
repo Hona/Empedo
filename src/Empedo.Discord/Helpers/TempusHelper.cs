@@ -42,6 +42,22 @@ namespace Empedo.Discord.Helpers
                     .Trim('0', ':', '.');
         }
 
+        public static string GetSteamId64(string steamId)
+        {
+            ulong output = 76561197960265728;
+
+            var idParts = steamId.Split(":");
+
+            output += ulong.Parse(idParts[2]) * 2;
+
+            if (idParts[1] == "1")
+            {
+                output += 1;
+            }
+            
+            return output.ToString();
+        }
+
         public static TimeSpan TicksToTimeSpan(long ticks) => new(ticks * 149998);
         public static Uri GetMapUrl(string name) => new("https://tempus.xyz/maps/" + name);
         public static Uri GetRecordUrl(int id) => new("https://tempus.xyz/records/" + id);
@@ -49,5 +65,8 @@ namespace Empedo.Discord.Helpers
         public static Uri GetDemoUrl(int id) => new("https://tempus.xyz/demos/" + id);
         public static Uri GetServerUrl(int id) => new("https://tempus.xyz/servers/" + id);
         public static Uri GetYoutubeUrl(string id) => new Uri("https://youtube.com/watch?v=" + id);
+
+        public static string GetMapImageUrl(string mapName) =>
+            $"https://files.lukeparker.dev/tempus-screenshots/screenshots/raw/{mapName}_1080p.jpeg";
     }
 }
