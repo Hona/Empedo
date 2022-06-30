@@ -4,7 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["src/Empedo.Discord/Empedo.Discord.csproj", "Empedo.Discord/"]
-RUN dotnet restore "src/Empedo.Discord/Empedo.Discord.csproj"
+RUN dotnet restore "Empedo.Discord/Empedo.Discord.csproj"
 COPY . .
 WORKDIR "/src/Empedo.Discord"
 RUN dotnet build "Empedo.Discord.csproj" -c Release -o /app/build
