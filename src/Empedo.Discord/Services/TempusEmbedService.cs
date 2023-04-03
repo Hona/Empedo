@@ -47,7 +47,11 @@ namespace Empedo.Discord.Services
                 .SelectMany(x => x.GameInfo.Users)
                 .Where(x => x?.Id != null).ToList();
 
-            var userIdStrings = users.Where(user => user?.Id != null).Select(user => user.Id.ToString()).ToList();
+            var userIdStrings = users
+                .Where(user => user?.Id != null)
+                // TODO: Investigate this after TempusHub fixes 0 IDs
+                .Where(user => user.Id is not 0)
+                .Select(user => user.Id.ToString()).ToList();
 
             var rankTasks = new List<Task<Rank>>();
             rankTasks.AddRange(userIdStrings.Select(_tempus.GetUserRankAsync));
