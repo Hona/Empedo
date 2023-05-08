@@ -13,6 +13,7 @@ env:
   REGISTRY: tempushubregistry.azurecr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: /empedobot
+  RESOURCE_GROUP: TempusHub
 
 
 jobs:
@@ -24,6 +25,11 @@ jobs:
         # checkout the repo
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
+
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
         
         - name: 'Build and push image'
           uses: azure/docker-login@v1
@@ -35,3 +41,15 @@ jobs:
         - run: |
             docker build . -t ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }} -f src/Empedo.Discord/Dockerfile
             docker push ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+        - name: 'Deploy to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: ${{ env.RESOURCE_GROUP }}
+            dns-name-label: ${{ env.RESOURCE_GROUP }}${{ github.run_number }}
+            image: ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }}
+            registry-login-server: ${{ env.REGISTRY }}
+            registry-username: TempusHubRegistry
+            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+            name: tempushub-empedobot
+            location: 'Australia East'
