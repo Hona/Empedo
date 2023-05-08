@@ -31,14 +31,15 @@ jobs:
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-        - name: 'Build and push image'
+        - name: 'Docker login'
           uses: azure/docker-login@v1
           with:
             login-server: ${{ env.REGISTRY }}
             username: TempusHubRegistry
             password: ${{ secrets.REGISTRY_PASSWORD }}
 
-        - run: |
+        - name: 'Build and push image'
+          run: |
             docker build . -t ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }} -f src/Empedo.Discord/Dockerfile
             docker push ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }}
 
@@ -54,12 +55,12 @@ jobs:
             name: tempushub-empedobot
             location: 'Australia East'
             environment-variables: \
-              Discord__CommandPrefix=$ \
+              Discord__CommandPrefix='$' \
               Discord__LogChannelId=568642136367562755 \
               Lambda__OverviewsChannelId=838017205811413022 \
               Lambda__ActivityChannelId=838017225381773380 \
               Lambda__ServersChannelId=838017240477204531
-            secure-environment-variables: Discord__Token=${{ secrets.DISCORD_TOKEN }}
+            secure-environment-variables: Discord__Token='${{ secrets.DISCORD_TOKEN }}'
             cpu: 1
             memory: 1
             restart-policy: 'OnFailure'
