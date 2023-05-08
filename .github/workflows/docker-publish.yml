@@ -58,7 +58,7 @@ jobs:
               Discord__LogChannelId=568642136367562755 \
               Lambda__OverviewsChannelId=838017205811413022 \
               Lambda__ActivityChannelId=838017225381773380 \
-              Lambda__ServersChannelId=838017240477204531 \
+              Lambda__ServersChannelId=838017240477204531
             secure-environment-variables: Discord__Token=${{ secrets.DISCORD_TOKEN }}
             cpu: 1
             memory: 1
