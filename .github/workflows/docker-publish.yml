@@ -32,7 +32,7 @@ jobs:
             username: TempusHubRegistry
             password: ${{ secrets.REGISTRY_PASSWORD }}
 
-        - working-directory: ./src/Empedo.Discord
+        - working-directory:
           run: |
-            docker build . -t ${{ env.REGISTRY }}${{ secrets.IMAGE_NAME }}:${{ github.sha }}
+            docker build . -t ${{ env.REGISTRY }}${{ secrets.IMAGE_NAME }}:${{ github.sha }} src/Empedo.Discord/Dockerfile
             docker push ${{ env.REGISTRY }}${{ secrets.IMAGE_NAME }}:${{ github.sha }}
