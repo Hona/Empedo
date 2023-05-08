@@ -31,7 +31,7 @@ namespace Empedo.Discord.Services
                 .OrderByDescending(x => x.GameInfo.PlayerCount).ToList();
             
             return servers.BuildEmbeds(x =>
-                    $"`{x.GameInfo.PlayerCount.ToString().PadLeft(2)}/{x.GameInfo.MaxPlayers.ToString().PadLeft(2)}` • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id}) • {Formatter.MaskedUrl(Formatter.Sanitize(x.GameInfo.CurrentMap), TempusHelper.GetMapUrl(x.GameInfo.CurrentMap))}",x => x.Title = "Server Overview",
+                    $"`{x.GameInfo.PlayerCount.ToString().PadLeft(2)}/{x.GameInfo.MaxPlayers.ToString().PadLeft(2)}` • [{x.ServerInfo.Name}](https://tempus.xyz/servers/{x.ServerInfo.Id}) • {Formatter.MaskedUrl(x.GameInfo.CurrentMap, TempusHelper.GetMapUrl(x.GameInfo.CurrentMap))}",x => x.Title = "Server Overview",
                 x => x.Timestamp = DateTimeOffset.Now, decorateAllEmbeds);
         }
 
@@ -88,7 +88,7 @@ namespace Empedo.Discord.Services
                 if (server == null || key.Id == null) continue;
                 
                 rankedLines.Add(
-                    $"{value.Class.GetEmote()} {value.Rank} • {Formatter.MaskedUrl(Formatter.Sanitize(key.Name), TempusHelper.GetPlayerUrl(key.Id.Value))} on {Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.CurrentMap), TempusHelper.GetMapUrl(server.GameInfo.CurrentMap))} • {Formatter.MaskedUrl(server.ServerInfo.Shortname, TempusHelper.GetServerUrl(server.ServerInfo.Id))}");
+                    $"{value.Class.GetEmote()} {value.Rank} • {Formatter.MaskedUrl(key.Name, TempusHelper.GetPlayerUrl(key.Id.Value))} on {Formatter.MaskedUrl(server.GameInfo.CurrentMap, TempusHelper.GetMapUrl(server.GameInfo.CurrentMap))} • {Formatter.MaskedUrl(server.ServerInfo.Shortname, TempusHelper.GetServerUrl(server.ServerInfo.Id))}");
             }
 
             var rankedLineGroups = rankedLines.SplitEmbedDescription();
@@ -98,7 +98,7 @@ namespace Empedo.Discord.Services
         }
 
         private static string FormatRecord(MapInfo mapInfo, RecordInfoShort recordInfo, TempusApi.Models.Activity.PlayerInfo playerInfo) =>
-            $" • {Formatter.MaskedUrl(Formatter.Sanitize(playerInfo.Name), TempusHelper.GetPlayerUrl(playerInfo.Id))} on {Formatter.MaskedUrl(Formatter.Sanitize(mapInfo.Name), TempusHelper.GetMapUrl(mapInfo.Name))} • {Formatter.MaskedUrl($"**{Formatter.Sanitize(FormatDuration(recordInfo.Duration))}**", TempusHelper.GetRecordUrl(recordInfo.Id))}";
+            $" • {Formatter.MaskedUrl(playerInfo.Name, TempusHelper.GetPlayerUrl(playerInfo.Id))} on {Formatter.MaskedUrl(mapInfo.Name, TempusHelper.GetMapUrl(mapInfo.Name))} • {Formatter.MaskedUrl($"**{FormatDuration(recordInfo.Duration)}**", TempusHelper.GetRecordUrl(recordInfo.Id))}";
         
         private static string FormatDuration(double duration)
         {
@@ -166,10 +166,10 @@ namespace Empedo.Discord.Services
                     Title = $"**{server.ServerInfo.Name}**"
                 };
                 
-                embed.AddField("Map", Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.CurrentMap), TempusHelper.GetMapUrl(server.GameInfo.CurrentMap)));
+                embed.AddField("Map", Formatter.MaskedUrl(server.GameInfo.CurrentMap, TempusHelper.GetMapUrl(server.GameInfo.CurrentMap)));
                 
                 if (server.GameInfo.NextMap != null)
-                    embed.AddField("Next Map", Formatter.MaskedUrl(Formatter.Sanitize(server.GameInfo.NextMap.ToString()), TempusHelper.GetMapUrl(server.GameInfo.NextMap.ToString())));
+                    embed.AddField("Next Map", Formatter.MaskedUrl(server.GameInfo.NextMap.ToString(), TempusHelper.GetMapUrl(server.GameInfo.NextMap.ToString())));
 
                 embed.AddField("Connect",
                     Formatter.Sanitize(server.ServerInfo.Addr));

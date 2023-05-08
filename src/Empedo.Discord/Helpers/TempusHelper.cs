@@ -5,6 +5,8 @@ namespace Empedo.Discord.Helpers
 {
     public static class TempusHelper
     {
+        private const string TempusUrl = "https://tempus2.xyz";
+        
         public static string GetClass(int id)
         {
             switch (id)
@@ -59,14 +61,14 @@ namespace Empedo.Discord.Helpers
         }
 
         public static TimeSpan TicksToTimeSpan(long ticks) => new(ticks * 149998);
-        public static Uri GetMapUrl(string name) => new("https://tempus.xyz/maps/" + name);
-        public static Uri GetRecordUrl(int id) => new("https://tempus.xyz/records/" + id);
-        public static Uri GetPlayerUrl(int id) => new("https://tempus.xyz/players/" + id);
-        public static Uri GetDemoUrl(int id) => new("https://tempus.xyz/demos/" + id);
-        public static Uri GetServerUrl(int id) => new("https://tempus.xyz/servers/" + id);
+        public static Uri GetMapUrl(string name) => new($"{TempusUrl}/maps/" + name);
+        public static Uri GetRecordUrl(int id) => new($"{TempusUrl}/records/" + id);
+        public static Uri GetPlayerUrl(int id) => new($"{TempusUrl}/players/" + id);
+        public static Uri GetDemoUrl(int id) => new($"{TempusUrl}/demos/" + id);
+        public static Uri GetServerUrl(int id) => new($"{TempusUrl}/servers/" + id);
         public static Uri GetYoutubeUrl(string id) => new Uri("https://youtube.com/watch?v=" + id);
-
+        
         public static string GetMapImageUrl(string mapName) =>
-            $"https://files.lukeparker.dev/tempus-screenshots/screenshots/raw/{mapName}_1080p.jpeg";
+            $"https://static.tempus2.xyz/web/screenshots/raw/{mapName}_1080p.jpeg";
     }
 }

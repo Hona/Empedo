@@ -1,0 +1,63 @@
+name: Docker
+
+on:
+  push:
+    branches: [ "master" ]
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: tempushubregistry.azurecr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: /empedobot
+  RESOURCE_GROUP: TempusHub
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+        - name: 'Docker login'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ env.REGISTRY }}
+            username: TempusHubRegistry
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+
+        - name: 'Build and push image'
+          run: |
+            docker build . -t ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }} -f src/Empedo.Discord/Dockerfile
+            docker push ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+        - name: 'Deploy to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: ${{ env.RESOURCE_GROUP }}
+            dns-name-label: ${{ env.RESOURCE_GROUP }}${{ github.run_number }}
+            image: ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }}
+            registry-login-server: ${{ env.REGISTRY }}
+            registry-username: TempusHubRegistry
+            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+            name: tempushub-empedobot
+            location: 'Australia East'
+            environment-variables: 
+              Discord__CommandPrefix=$
+              Discord__LogChannelId=568642136367562755
+              Lambda__OverviewsChannelId=838017205811413022
+              Lambda__ActivityChannelId=838017225381773380
+              Lambda__ServersChannelId=838017240477204531
+            secure-environment-variables: Discord__Token=${{ secrets.DISCORD_TOKEN }}
+            cpu: 1
+            memory: 1
+            restart-policy: 'OnFailure'
+              
