@@ -60,5 +60,7 @@ jobs:
               Lambda__ActivityChannelId=838017225381773380 \
               Lambda__ServersChannelId=838017240477204531 \
             secure-environment-variables: Discord__Token=${{ secrets.DISCORD_TOKEN }}
-              
+            cpu: 1
+            memory: 1
+            restart-policy: 'OnFailure'
               
