@@ -33,5 +33,5 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
 
         - run: |
-            docker build -t ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }} src/Empedo.Discord/Dockerfile
+            docker build . -t ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }} -f src/Empedo.Discord/Dockerfile
             docker push ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ github.sha }}
